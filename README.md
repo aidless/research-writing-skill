@@ -1,5 +1,7 @@
 # 科研写作助手 (Research Writing Assistant)
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 > 📄 English version: [README_EN.md](README_EN.md)
 
 把"论文写作"从一次性聊天，升级成可追踪、可恢复、可复用的工程化协作流程。  
