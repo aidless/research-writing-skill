@@ -3,3 +3,21 @@ __pycache__/
 .env
 *.log
 node_modules/
+
+
+# --- added by WorkBuddy takeover 2026-10-21 ---
+.env.*
+!.env.example
+!.env.template
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.DS_Store
+data/
+models/
+.regression_tmp/
+*.bak
+
+*.bak*
