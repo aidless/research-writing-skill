@@ -82,21 +82,15 @@ cd research-writing-skill
 - **OpenCode**：参考 `.opencode/INSTALL.md`
 - **其他平台**：将整个目录放入论文项目根目录即可
 
-## 图表示例（真实产物）
+## 图表示例
 
-数据结果图优先由 Skill 生成 Python 脚本，再在本地运行绘制。下面两张图展示的是这种方式得到的论文结果图示例，适合用于训练曲线、指标对比和实验结果复核。
+> ⚠️ 示例图片未随仓库分发（`img/` 目录不含图片资源，避免仓库体积膨胀与
+> 许可证问题）。以下描述对应的真实产物类型，图片本身由你按脚本生成后查看。
 
-<p align="center">
-  <img src="img/python-miou-comparison.png" alt="本地 Python 绘图示例：验证集 mIoU 对比" width="48%">
-  <img src="img/python-training-loss-comparison.png" alt="本地 Python 绘图示例：训练损失对比" width="48%">
-</p>
-
-流程图、模型结构图和机制图可以先由 `figures-diagram` 生成提示词，再交给 Gemini 等生图工具绘制。下面两张图是按提示词生成的图示示例。
-
-<p align="center">
-  <img src="img/gemini-federated-calibration-diagram.png" alt="Gemini 生成图示示例：联邦校准流程" width="48%">
-  <img src="img/gemini-mask2former-decoder-diagram.png" alt="Gemini 生成图示示例：Mask2Former 解码机制" width="48%">
-</p>
+- **数据结果图**：由 `skills/figures-python/` 生成 Python 脚本，本地运行绘制。
+  适合训练曲线、指标对比和实验结果复核。
+- **流程图/架构图/机制图**：由 `skills/figures-diagram/` 生成提示词，
+  再交给 Gemini 等生图工具绘制。
 
 ## 标准协作流程（推荐）
 
@@ -146,10 +140,6 @@ powershell -ExecutionPolicy Bypass -File scripts/research_quality_gate.ps1 -Proj
 如果你在使用过程中想交流论文结构、文献整理、图表提示词、去AI化写作或模板适配，欢迎加入科研写作讨论群，大家一起讨论和交流。
 
 QQ群：827924233
-
-<p align="center">
-  <img src="img/qq-research-writing-group.jpg" alt="科研写作讨论群 QQ 群" width="260">
-</p>
 
 ## LaTeX模板使用
 
@@ -222,7 +212,6 @@ research-writing-skill/
 │   ├── session-start
 │   ├── hooks.json
 │   └── hooks-cursor.json
-├── img/                        # README 示例图片
 ├── skills/                     # 技能模块目录
 │   ├── using-research-writing/
 │   ├── paper-orchestration/
@@ -249,6 +238,36 @@ research-writing-skill/
 ├── plan-template/              # 计划模板
 └── scripts/                    # 工具脚本
 ```
+
+## 测试与验证
+
+本仓库没有独立单测框架——验证以脚本级为主（与 `CLAUDE.md` 声明一致）：
+
+```bash
+# 写作风格检查（对单个 md 输出）
+bash scripts/style_check.sh chapters/01-introduction.md
+# 文献检索工具（跨源，导出 BibTeX）
+python scripts/scholar_search.py "deep learning" --sources crossref --year 2020-2024 --limit 20
+# PDF 解析（抽取文本/章节/元数据）
+python scripts/pdf_parser.py paper.pdf --sections --json output.json
+```
+
+Windows 端脚本（CI 原声）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/check_skill_integrity.ps1
+powershell -ExecutionPolicy Bypass -File scripts/research_quality_gate.ps1 -ProjectPath <paper-project>
+```
+
+**环境依赖说明（诚实声明）**：
+
+- `scripts/style_check.sh` 依赖 `rg`（ripgrep）；`rg` 缺失时脚本降级为「每项输出 OK」
+  但实际不执行匹配——这不是静默通过，而是降级提示。请先 `apt install ripgrep` 或
+  `cargo install ripgrep` 再运行。
+- `scripts/check_skill_integrity.ps1` / `research_quality_gate.ps1` 是 PowerShell 脚本，
+  Linux/macOS 需先安装 `powershell`（pwsh），否则无法执行（脚本设计面向 Windows 主机）。
+- Python 脚本依赖 `requirements.txt`（pymupdf / matplotlib / numpy / pandas / requests），
+  运行前 `pip install -r requirements.txt`。
 
 ## 版本
 
