@@ -239,6 +239,29 @@ research-writing-skill/
 └── scripts/                    # 工具脚本
 ```
 
+## Fail-closed 声明（质量门控）
+
+本 skill 对「证据未到位就写正文 / 结论无核验就交付」**默认 fail-closed**：
+
+- **质量门控**：中型/整篇写作先经 `paper-orchestration` 生成任务包，`plan/progress.md`
+  记录 capability-use audit；引言先有 `refs/evidence-map.md`；实验先有
+  `plan/experiment-protocol.md` + `tables/table-schema.md` + `figures/data-manifest.md`。
+  证据未到位即不进入下一步。
+- **高风险结论二次核验**：高风险结论请你二次核验，skill 不代为放行。
+- **文献不编造**：文献与数据不编造，引用需可追溯（`scholar_search.py` 跨源导出 BibTeX）。
+- **诚实降级**：`style_check.sh` 依赖 `rg`，`rg` 缺失时降级为提示而非静默通过；
+  PowerShell 脚本面向 Windows 主机，Linux 需先装 `pwsh`——README 如实标注。
+
+> 立场：宁可停在证据未到位处，也不在无证据时写正文；宁可标注降级，也不声称未验证的能力。
+
+## 结果数字（真实可复算）
+
+- **19 个技能模块**（`skills/` 目录，19/19 通过完整性检查脚本核对）。
+- **8 个工具脚本**（`scripts/` 目录：style_check、scholar_search、pdf_parser、
+  check_skill_integrity、research_quality_gate、init_plan 等）。
+- **14 个旧模块**（`modules/` 保留兼容）。
+- 版本 3.1.0。
+
 ## 测试与验证
 
 本仓库没有独立单测框架——验证以脚本级为主（与 `CLAUDE.md` 声明一致）：
