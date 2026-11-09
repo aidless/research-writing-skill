@@ -1,5 +1,7 @@
 # 科研写作助手 (Research Writing Assistant)
 
+[![CI](https://github.com/aidless/research-writing-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/research-writing-skill/actions/workflows/ci.yml)
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > 📄 English version: [README_EN.md](README_EN.md)
