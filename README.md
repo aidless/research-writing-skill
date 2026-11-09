@@ -4,6 +4,8 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+> **English TL;DR**: A directory-packaged skill for Claude Code, Cursor, Codex and Gemini CLI that turns thesis writing into a tracked, resumable workflow: brainstorm-driven scoping, per-chapter files, evidence maps, reproducible Python figures, LaTeX templates and staged quality gates. Install the folder and invoke it conversationally per SKILL.md. A process skill without quantitative benchmarks, it relies on plan files, gates and write-back records, exercised once end-to-end on the author's own draft.
+
 > 📄 English version: [README_EN.md](README_EN.md)
 
 把"论文写作"从一次性聊天，升级成可追踪、可恢复、可复用的工程化协作流程。  
