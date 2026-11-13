@@ -1,11 +1,19 @@
 # 科研写作助手 (Research Writing Assistant)
 
+[![CI](https://github.com/aidless/research-writing-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/research-writing-skill/actions/workflows/ci.yml)
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> **English TL;DR**: A directory-packaged skill for Claude Code, Cursor, Codex and Gemini CLI that turns thesis writing into a tracked, resumable workflow: brainstorm-driven scoping, per-chapter files, evidence maps, reproducible Python figures, LaTeX templates and staged quality gates. Install the folder and invoke it conversationally per SKILL.md. A process skill without quantitative benchmarks, it relies on plan files, gates and write-back records, exercised once end-to-end on the author's own draft.
 
 > 📄 English version: [README_EN.md](README_EN.md)
 
 把"论文写作"从一次性聊天，升级成可追踪、可恢复、可复用的工程化协作流程。  
 这个 Skill 面向本科生、研究生和早期科研人员，目标很直接：少走弯路，减少返工，把时间花在真正有价值的研究内容上。
+
+**验证过什么**：没有量化评测——这是一套流程型 Skill，产出一致性靠"计划文件 + 阶段门禁 + 回写记录"，不靠分数；已在作者自己的论文草稿上完整跑过一遍。
+
+**怎么用**：把整个目录作为 Skill 装上（Claude Code / Cursor / Codex / Gemini CLI 各读对应配置文件），然后在对话里说"按 SKILL.md 的流程帮我写 XX 章节"。
 
 ## 项目定位
 
@@ -55,6 +63,28 @@
 这里的去AI化不是把原文压短。除非用户明确要求缩写，Skill 不会主动删减事实、数据、限定条件和解释句。研究对象、数据范围、样本口径、方法条件、指标含义、实验边界、结论限制和专有名词都应保留，语言调整只服务于表达自然、逻辑清楚和口径稳定。
 
 正文优先使用连续段落，不把论文内容改成项目符号堆砌，也不依赖加粗或斜体制造重点。写作时会避开"首先、其次、最后、此外、另外、接下来、总之"等机械连接词，也会避开"值得注意的是、需要指出的是、重要的是、必须强调的是"等空壳句式。遇到原文信息完整、语序自然但略显啰嗦的情况，只做轻微整理，不为了显得精炼而压掉必要信息。
+
+## 5 分钟上手（脚本实跑，2026-11-10）
+
+![demo](docs/demo.gif)
+
+```bash
+# 1. 计划引导：在任意项目根生成 5 份计划文件（离线可用）
+bash scripts/init_plan.sh /tmp/your-paper-project
+# → [ADD] /tmp/your-paper-project/plan/project-overview.md
+#   [ADD] plan/progress.md / notes.md / outline.md / stage-gates.md
+#   [DONE] plan bootstrap finished. files_copied=5
+
+# 2. 文献检索：走真实 arXiv API（需联网）
+python3 scripts/scholar_search.py "attention is all you need"   --sources arxiv --format apa --limit 2
+# → Found 2 papers
+#   Luke Melas-Kyriazi (2021). Do You Even Need Attention? A Stack of
+#     Feed-Forward Layers Does Surprisingly Well on ImageNet. arXiv.
+#   Anton Alyakin (2025). "All You Need" is Not All You Need for a Paper
+#     Title: On the Origins of a Scientific Meme. arXiv.
+```
+
+安装后把目录放进论文项目根，在对话里说"按 SKILL.md 的流程帮我写 XX 章节"。
 
 ## 重要边界（务必先看）
 
@@ -195,6 +225,15 @@ Pandoc 主要解决格式转换和样式继承，不替代最终人工校对。�
 ### 这个 Skill 会不会瞎编文献？
 
 不会。规则层面明确禁止编造文献与数据；引用要求可追溯。
+
+## Limits
+
+- **流程型 Skill，无量化评测**：产出一致性靠计划文件 + 阶段门禁 + 回写记录，没有
+  基准分数；仅在作者自己的论文草稿上完整跑过一遍。
+- **不会自动写 `.docx` / 排版**：Word 端样式需手动处理（见"重要边界"）。
+- `scholar_search.py` 依赖外部学术 API（PubMed/CrossRef/Semantic Scholar/arXiv），
+  限速与可用性随上游变化；检索结果需人工核验后再引用。
+- Windows 的 PowerShell 脚本（`*.ps1`）与 bash 脚本功能一致，按平台任选。
 
 ## 仓库结构
 
