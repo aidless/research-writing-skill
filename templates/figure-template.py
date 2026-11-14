@@ -4,7 +4,6 @@ Figure Template - 科学图表生成模板
 """
 
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 from pathlib import Path
@@ -114,7 +113,7 @@ def save_figure(fig, output_dir, fig_name):
     fig.savefig(output_dir / f'{fig_name}.svg', format='svg',
                 facecolor='white', edgecolor='none')
     
-    print(f"✓ 图片已保存:")
+    print("✓ 图片已保存:")
     print(f"  - {output_dir / f'{fig_name}.png'}")
     print(f"  - {output_dir / f'{fig_name}.svg'}")
 

@@ -7,11 +7,8 @@ that need no network / no PDF file) plus repo-structure facts. Nothing here
 asserts behavior that the repo does not actually have.
 """
 import importlib.util
-import os
-import sys
 from pathlib import Path
 
-import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 

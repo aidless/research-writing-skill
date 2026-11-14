@@ -31,7 +31,7 @@ import sys
 import time
 import xml.etree.ElementTree as ET
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from urllib.parse import quote
 
 try:
