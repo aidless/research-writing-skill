@@ -335,3 +335,33 @@ powershell -ExecutionPolicy Bypass -File scripts/research_quality_gate.ps1 -Proj
 
 - 版本：3.1.0
 - 更新日期： 2026-05-10
+
+## 验收题库与复算
+
+`eval/cases.jsonl` 是 20 条可执行验收题，覆盖十个口径：引文格式、错误路径、PDF 小节解析、
+摘要处理、技能模块清单、仓库清单、插件元数据、工具脚本、测试声明、文档锚点。
+其中 16 条 `expr` + 1 条 `raises` 全部**真调本仓库脚本或真解析仓库文件**——
+`scripts/scholar_search.py`、`scripts/pdf_parser.py` 的纯函数被直接 import 执行，
+`.claude-plugin/plugin.json`、`hooks/hooks.json`、`tests/test_scripts_and_repo.py`
+（ast 数测试函数）等都是当场读、当场算；3 条 `doc` 校验公开文档锚点是否还在。
+期望值不是抄文档，而是现算出来的：改掉 `clean_text` 的字符集、`parse_sections` 的正则，
+或者增删一个技能目录，题库立刻变红。
+
+```bash
+python3 eval/run_cases.py            # 20/20 cases passed
+python3 eval/run_cases.py --save     # 顺带把结果写进 eval/run-report.json
+python3 eval/run_cases.py --selftest # 篡改一条期望值，必须变红（19/20）
+```
+
+三种 mode 的口径：`expr` 的 `verify` 是一段可执行 Python，必须以 `result = ...` 结尾，
+结果与 `expected` 比较（数值容差 1e-9）；`raises` 要求 `verify` 抛出 `expected` 指定的异常类；
+`doc` 形如 `相对路径::正则`，断言正则在文件里出现。
+
+**数字如何复算**：`eval/run-report.json` 里每条 case 都带 `id` / `axis` / `detail`，
+把 `detail` 与 `cases.jsonl` 的 `verify` 代码一起看，就能从仓库源码复现该数字；
+`--save` 重跑一次即可重建整份报告，不需要手工抄数。
+
+**失败归因**：`run_cases.py` 不只报通过率，失败时按 `axis` 汇总（例如
+`脚本/引文格式: 1 条 —— SS-01`），直接指出是哪个口径坏了，而不是只给一个通过率。
+`--selftest` 就是这条纪律的反证：把 SS-01 的期望值篡改成不可能的值，整套题必须掉到 19/20。
+

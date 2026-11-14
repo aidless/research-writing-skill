@@ -1,0 +1,129 @@
+{
+ "total": 20,
+ "passed": 20,
+ "failed": 0,
+ "selftest": false,
+ "failed_by_axis": {},
+ "results": [
+  {
+   "id": "SS-01",
+   "axis": "脚本/引文格式",
+   "ok": true,
+   "detail": "A b c d"
+  },
+  {
+   "id": "SS-02",
+   "axis": "脚本/引文格式",
+   "ok": true,
+   "detail": "smith2020"
+  },
+  {
+   "id": "SS-03",
+   "axis": "脚本/引文格式",
+   "ok": true,
+   "detail": "2"
+  },
+  {
+   "id": "SS-04",
+   "axis": "脚本/错误路径",
+   "ok": true,
+   "detail": "raised ValueError"
+  },
+  {
+   "id": "PP-01",
+   "axis": "脚本/小节解析",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "id": "PP-02",
+   "axis": "脚本/小节解析",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "id": "PP-03",
+   "axis": "脚本/摘要处理",
+   "ok": true,
+   "detail": "60"
+  },
+  {
+   "id": "PP-04",
+   "axis": "脚本/摘要处理",
+   "ok": true,
+   "detail": "11"
+  },
+  {
+   "id": "RS-01",
+   "axis": "仓库/技能模块",
+   "ok": true,
+   "detail": "19"
+  },
+  {
+   "id": "RS-02",
+   "axis": "仓库/技能模块",
+   "ok": true,
+   "detail": "19"
+  },
+  {
+   "id": "RS-03",
+   "axis": "仓库/清单口径",
+   "ok": true,
+   "detail": "14"
+  },
+  {
+   "id": "RS-04",
+   "axis": "仓库/清单口径",
+   "ok": true,
+   "detail": "5"
+  },
+  {
+   "id": "PL-01",
+   "axis": "仓库/插件元数据",
+   "ok": true,
+   "detail": "3.1.0"
+  },
+  {
+   "id": "PL-02",
+   "axis": "仓库/插件元数据",
+   "ok": true,
+   "detail": "11"
+  },
+  {
+   "id": "PL-03",
+   "axis": "仓库/插件元数据",
+   "ok": true,
+   "detail": "SessionStart"
+  },
+  {
+   "id": "SC-01",
+   "axis": "脚本/工具清单",
+   "ok": true,
+   "detail": "8"
+  },
+  {
+   "id": "TS-01",
+   "axis": "仓库/测试声明",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "id": "DOC-01",
+   "axis": "文档/入口",
+   "ok": true,
+   "detail": "## 结果数字（真实可复算）"
+  },
+  {
+   "id": "DOC-02",
+   "axis": "文档/入口",
+   "ok": true,
+   "detail": "## 哲学原则"
+  },
+  {
+   "id": "DOC-03",
+   "axis": "文档/模块",
+   "ok": true,
+   "detail": "先讨论后执行"
+  }
+ ]
+}
