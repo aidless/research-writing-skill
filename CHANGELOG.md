@@ -4,6 +4,17 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)。
 
+## [Unreleased]
+
+### 变更
+
+- 增加离线 `make check`：清单文件、机械稿件门禁夹具、一张 SVG 的哈希。不测量写作质量或模型行为。
+- README 与 README_EN 删去「比普通对话式写作工具更稳定 / more reliable than ordinary conversational writing tools」，以及「已适配 / adapted」各平台。平台说明改为仓库里有哪些文件、检查了什么、没有实机加载。
+- 克隆地址改为 `https://github.com/aidless/research-writing-skill`。两个 `plugin.json` 的 homepage / repository 同步。
+- OpenCode 安装说明改为：本仓库没有 `package.json`，不能当作文档中的 git 插件包。
+- Codex 安装说明改为每个 `skills/<name>` 目录单独放置，并写明未在 Codex 中执行。
+- 新增 `FAILURE_MODES.md`。
+
 ## [3.1.0] - 2026-05-10
 
 ### 新增

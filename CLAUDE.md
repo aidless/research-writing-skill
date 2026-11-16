@@ -103,9 +103,10 @@ python scripts/pdf_parser.py paper.pdf --sections --json output.json
 
 ### Test/verification status
 
-There is no dedicated unit-test framework in this repository. Validation is script-level:
+`make check` is the offline mechanical check (packaging files, manuscript-gate fixtures, one SVG hash). It does not measure writing quality. `tests/test_scripts_and_repo.py` is a small pytest module for pure functions. Also:
+
 - run `style_check` on modified markdown outputs
-- run `scripts/check_skill_integrity.ps1` after skill workflow edits
+- run `scripts/check_skill_integrity.ps1` after skill workflow edits (PowerShell)
 - run `scripts/research_quality_gate.ps1 -ProjectPath <paper-project>` on manuscript workspaces
 - run target Python scripts with representative inputs to verify behavior
 

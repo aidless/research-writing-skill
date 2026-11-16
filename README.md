@@ -1,367 +1,90 @@
-# 科研写作助手 (Research Writing Assistant)
+# 科研写作助手
 
-[![CI](https://github.com/aidless/research-writing-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/research-writing-skill/actions/workflows/ci.yml)
+STATUS: WORK-IN-PROGRESS — not A yet
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+> 目录化的论文写作流程技能。本仓库离线检查了清单文件、一套机械稿件门禁，和一张可复算的图。没有写作质量、录用或采用方面的测量，也没有在 Claude Code、Cursor、Codex、OpenCode 或 Gemini CLI 里实机加载。
 
-> **English TL;DR**: A directory-packaged skill for Claude Code, Cursor, Codex and Gemini CLI that turns thesis writing into a tracked, resumable workflow: brainstorm-driven scoping, per-chapter files, evidence maps, reproducible Python figures, LaTeX templates and staged quality gates. Install the folder and invoke it conversationally per SKILL.md. A process skill without quantitative benchmarks, it relies on plan files, gates and write-back records, exercised once end-to-end on the author's own draft.
+[English](README_EN.md)
 
-> 📄 English version: [README_EN.md](README_EN.md)
+论文草稿如果只留在一轮对话里，数字、图和引用容易和出处脱节，过程也难恢复。
+这个仓库是一组技能说明和脚本，要求计划文件、证据表和分章草稿。
+下表只说明机械检查是否通过，不说明写出来的论文更好。
 
-把"论文写作"从一次性聊天，升级成可追踪、可恢复、可复用的工程化协作流程。  
-这个 Skill 面向本科生、研究生和早期科研人员，目标很直接：少走弯路，减少返工，把时间花在真正有价值的研究内容上。
-
-**验证过什么**：没有量化评测——这是一套流程型 Skill，产出一致性靠"计划文件 + 阶段门禁 + 回写记录"，不靠分数；已在作者自己的论文草稿上完整跑过一遍。
-
-**怎么用**：把整个目录作为 Skill 装上（Claude Code / Cursor / Codex / Gemini CLI 各读对应配置文件），然后在对话里说"按 SKILL.md 的流程帮我写 XX 章节"。
-
-## 项目定位
-
-这不是一个"只会润色句子"的提示词包，而是一套完整的科研写作协作系统。  
-它会在任务开始前先对齐目标与约束，通过头脑风暴确认论文类型、研究背景、方法和章节结构，再按学科和任务路由到对应技能模块执行。
-
-如果你在做毕业论文、课程项目论文或投稿初稿，这个 Skill 会比普通对话式写作工具更稳定，因为它强调流程、记录和回写，不依赖单轮记忆。
-
-## 核心能力
-
-- **头脑风暴**：7轮问答确认论文类型、学科、题目、研究背景、方法、章节结构
-- **AI辅助写作**：从选题推进、正文写作、图表生成到投稿前自审，按阶段门禁执行
-- **去AI化写作**：不把润色等同于压缩，优先保留研究对象、数据口径、方法条件、指标含义和结论边界
-- **图表生成支持**：Python 负责可复现数据图，Gemini 等生图工具负责流程图、架构图和概念图提示词
-- **学科化写作支持**：工科、社科、医学、法学模块分流
-- **文献综述支持**：英文检索整合与中文文献整理协作
-- **LaTeX模板支持**：用户提供学校/期刊模板，自动生成可编译的LaTeX项目
-- **环境自动化**：Miniconda 安装、虚拟环境创建、绘图依赖安装与排错
-
-## 适用平台
-
-本 Skill 采用目录化设计，已适配以下平台：
-
-| 平台 | 配置文件 |
-|------|----------|
-| Claude Code | `.claude-plugin/plugin.json` |
-| Cursor | `.cursor-plugin/plugin.json` |
-| Codex | `.codex/INSTALL.md` |
-| OpenCode | `.opencode/INSTALL.md` |
-| Gemini CLI | `GEMINI.md` |
-| 其他 | `AGENTS.md` |
-
-## 你会得到什么产物
-
-默认情况下，Skill 产物是项目内文件，不是 Word 成品文件。
-
-| 产物类型 | 默认格式 | 说明 |
-|---|---|---|
-| 写作正文 | `.md` / 纯文本 / `.tex` | 便于版本管理和后续再加工 |
-| 章节文件 | `chapters/*.md` | 每章一个独立文件 |
-| LaTeX项目 | `chapters/*.tex` + `main.tex` | 可直接编译 |
-| 图表脚本 | `.py` | 可复现图表生成逻辑 |
-| 提示词资产 | `.md` | 可复用的翻译、润色、去AI化模板 |
-
-## 去AI化写作边界
-
-这里的去AI化不是把原文压短。除非用户明确要求缩写，Skill 不会主动删减事实、数据、限定条件和解释句。研究对象、数据范围、样本口径、方法条件、指标含义、实验边界、结论限制和专有名词都应保留，语言调整只服务于表达自然、逻辑清楚和口径稳定。
-
-正文优先使用连续段落，不把论文内容改成项目符号堆砌，也不依赖加粗或斜体制造重点。写作时会避开"首先、其次、最后、此外、另外、接下来、总之"等机械连接词，也会避开"值得注意的是、需要指出的是、重要的是、必须强调的是"等空壳句式。遇到原文信息完整、语序自然但略显啰嗦的情况，只做轻微整理，不为了显得精炼而压掉必要信息。
-
-## 5 分钟上手（脚本实跑，2026-11-10）
-
-![demo](docs/demo.gif)
-
-```bash
-# 1. 计划引导：在任意项目根生成 5 份计划文件（离线可用）
-bash scripts/init_plan.sh /tmp/your-paper-project
-# → [ADD] /tmp/your-paper-project/plan/project-overview.md
-#   [ADD] plan/progress.md / notes.md / outline.md / stage-gates.md
-#   [DONE] plan bootstrap finished. files_copied=5
-
-# 2. 文献检索：走真实 arXiv API（需联网）
-python3 scripts/scholar_search.py "attention is all you need"   --sources arxiv --format apa --limit 2
-# → Found 2 papers
-#   Luke Melas-Kyriazi (2021). Do You Even Need Attention? A Stack of
-#     Feed-Forward Layers Does Surprisingly Well on ImageNet. arXiv.
-#   Anton Alyakin (2025). "All You Need" is Not All You Need for a Paper
-#     Title: On the Origins of a Scientific Meme. arXiv.
-```
-
-安装后把目录放进论文项目根，在对话里说"按 SKILL.md 的流程帮我写 XX 章节"。
-
-## 重要边界（务必先看）
-
-1. Skill 默认不会自动生成或直接写入 `.docx`。  
-2. Skill 默认不会替你"打开 Word 并排版"，需要你手动复制或用工具转换。  
-3. Skill 可以生成适合粘贴进 Word 的纯文本段落，但最终样式（标题级别、页眉页脚、目录、参考文献域）需要你在 Word 端处理。  
-4. 文献与数据不会编造，引用需可追溯；高风险结论请你二次核验。  
-
-## 安装
-
-### 方式一：直接下载
-
-下载仓库，解压后把 `research-writing-skill/` 复制到你的论文写作目录就可以用了。
-
-### 方式二：Git Clone
-
-```bash
-git clone https://github.com/Norman-bury/research-writing-skill.git
-cd research-writing-skill
-```
-
-### 各平台安装
-
-- **Codex**：参考 `.codex/INSTALL.md`
-- **OpenCode**：参考 `.opencode/INSTALL.md`
-- **其他平台**：将整个目录放入论文项目根目录即可
-
-## 图表示例
-
-> ⚠️ 示例图片未随仓库分发（`img/` 目录不含图片资源，避免仓库体积膨胀与
-> 许可证问题）。以下描述对应的真实产物类型，图片本身由你按脚本生成后查看。
-
-- **数据结果图**：由 `skills/figures-python/` 生成 Python 脚本，本地运行绘制。
-  适合训练曲线、指标对比和实验结果复核。
-- **流程图/架构图/机制图**：由 `skills/figures-diagram/` 生成提示词，
-  再交给 Gemini 等生图工具绘制。
-
-## 标准协作流程（推荐）
-
-1. **头脑风暴**：说"我要写论文"，Skill会引导你确认论文类型、题目、研究背景等
-2. **章节规划**：确认章节结构后，Skill在 `chapters/` 创建框架
-3. **逐章写作**：按章节顺序写作，每章一个文件
-4. **图表生成**：需要数据图时，Skill生成Python脚本
-5. **自审检查**：使用peer-review技能进行投稿前自审
-6. **交付**：手动迁移到Word/LaTeX完成最终排版
-
-## 质量门控
-
-中型或整篇论文任务先使用 `skills/paper-orchestration/` 生成任务包，并在 `plan/progress.md` 记录 capability-use audit。引言和相关工作必须先形成 `refs/evidence-map.md` 或 `plan/evidence-map.md`。实验与结果章节必须先形成 `plan/experiment-protocol.md`、`tables/table-schema.md` 和 `figures/data-manifest.md`。
-
-常用检查命令：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/check_skill_integrity.ps1
-powershell -ExecutionPolicy Bypass -File scripts/research_quality_gate.ps1 -ProjectPath <paper-project>
-```
-
-## 技能地图
-
-| 场景 | 技能 |
-|---|---|
-| 入口与路由 | `skills/using-research-writing/` |
-| 中型/整篇任务编排 | `skills/paper-orchestration/` |
-| 头脑风暴 | `skills/brainstorming-research/` |
-| 文献驱动引言/相关工作 | `skills/evidence-driven-writing/` |
-| 章节写作 | `skills/writing-chapters/` |
-| 实验与结果规划 | `skills/experiment-results-planning/` |
-| LaTeX输出 | `skills/latex-output/` |
-| 通用写作规范 | `skills/writing-core/` |
-| 文科/社科写作 | `skills/writing-humanities/` |
-| 医学/生物写作 | `skills/writing-medical/` |
-| 法学写作 | `skills/writing-law/` |
-| 文献综述 | `skills/literature-review/` |
-| 翻译/润色/去AI化 | `skills/prompts-collection/` |
-| 投稿前自审 | `skills/peer-review/` |
-| 统计分析 | `skills/statistical-analysis/` |
-| Python 图表 | `skills/figures-python/` |
-| 流程图/架构图 | `skills/figures-diagram/` |
-| 环境安装与排错 | `skills/environment-setup/` |
-
-## 交流讨论
-
-如果你在使用过程中想交流论文结构、文献整理、图表提示词、去AI化写作或模板适配，欢迎加入科研写作讨论群，大家一起讨论和交流。
-
-QQ群：827924233
-
-## LaTeX模板使用
-
-如果你有学校或期刊提供的LaTeX模板：
-
-1. 将模板文件（`.cls`, `.sty`, `.tex`等）放入 `latex-templates/` 目录
-2. 告诉AI"使用我的LaTeX模板"
-3. AI会解析模板结构并生成对应的章节 `.tex` 文件
-
-详细说明见 `latex-templates/README.md`
-
-## 如何把 Markdown 交付到 Word
-
-### 方案 A：手动复制（默认推荐）
-
-1. 让 Skill 输出"纯文本段落版"正文（避免 Markdown 标记）
-2. 在编辑器中复制正文并粘贴到 Word
-3. 在 Word 中应用学校模板样式（标题、正文、图注、表注）
-4. 手动检查公式、参考文献、图表编号与交叉引用
-
-### 方案 B：Pandoc 转换（可选）
-
-如果你本地已安装 Pandoc，可以先确认命令可用：
-
-```bash
-pandoc --version
-```
-
-最简单的转换方式是把 Markdown 转成 Word：
-
-```bash
-pandoc draft.md -o draft.docx
-```
-
-如果你已经有学校或期刊的 Word 样式模板，可以使用参考模板生成 `.docx`：
-
-```bash
-pandoc draft.md --reference-doc=template.docx -o draft.docx
-```
-
-Pandoc 主要解决格式转换和样式继承，不替代最终人工校对。转换后仍需检查标题层级、图表编号、公式、参考文献、页眉页脚和目录域。
-
-## FAQ
-
-### 为什么默认产物不是 Word？
-
-因为科研协作更需要可追踪、可复用、可版本化的文本资产，Markdown 更适合过程迭代。Word 适合最终交付，所以放在最后一步处理更稳妥。
-
-### 可以直接让我"生成最终可提交版本"吗？
-
-可以做接近终稿的内容，但学校模板、目录域、页码、参考文献域、格式细节仍建议在 Word 端完成。
-
-### 这个 Skill 会不会瞎编文献？
-
-不会。规则层面明确禁止编造文献与数据；引用要求可追溯。
-
-## Limits
-
-- **流程型 Skill，无量化评测**：产出一致性靠计划文件 + 阶段门禁 + 回写记录，没有
-  基准分数；仅在作者自己的论文草稿上完整跑过一遍。
-- **不会自动写 `.docx` / 排版**：Word 端样式需手动处理（见"重要边界"）。
-- `scholar_search.py` 依赖外部学术 API（PubMed/CrossRef/Semantic Scholar/arXiv），
-  限速与可用性随上游变化；检索结果需人工核验后再引用。
-- Windows 的 PowerShell 脚本（`*.ps1`）与 bash 脚本功能一致，按平台任选。
-
-## 仓库结构
-
-```text
-research-writing-skill/
-├── SKILL.md                    # 主入口（兼容旧平台）
-├── AGENTS.md                   # 通用代理配置
-├── GEMINI.md                   # Gemini CLI 配置
-├── CHANGELOG.md                # 版本记录
-├── .claude-plugin/             # Claude Code 配置
-├── .cursor-plugin/             # Cursor 配置
-├── .codex/                     # Codex 配置
-├── .opencode/                  # OpenCode 配置
-├── hooks/                      # 会话启动脚本
-│   ├── session-start
-│   ├── hooks.json
-│   └── hooks-cursor.json
-├── skills/                     # 技能模块目录
-│   ├── using-research-writing/
-│   ├── paper-orchestration/
-│   ├── brainstorming-research/
-│   ├── evidence-driven-writing/
-│   ├── writing-chapters/
-│   ├── experiment-results-planning/
-│   ├── latex-output/
-│   ├── literature-review/
-│   ├── figures-python/
-│   ├── figures-diagram/
-│   ├── peer-review/
-│   ├── statistical-analysis/
-│   ├── verification/
-│   ├── environment-setup/
-│   ├── prompts-collection/
-│   ├── writing-core/
-│   ├── writing-humanities/
-│   ├── writing-medical/
-│   └── writing-law/
-├── latex-templates/            # 用户LaTeX模板目录
-├── modules/                    # 旧模块（保留兼容）
-├── templates/                  # 代码模板
-├── plan-template/              # 计划模板
-└── scripts/                    # 工具脚本
-```
-
-## Fail-closed 声明（质量门控）
-
-本 skill 对「证据未到位就写正文 / 结论无核验就交付」**默认 fail-closed**：
-
-- **质量门控**：中型/整篇写作先经 `paper-orchestration` 生成任务包，`plan/progress.md`
-  记录 capability-use audit；引言先有 `refs/evidence-map.md`；实验先有
-  `plan/experiment-protocol.md` + `tables/table-schema.md` + `figures/data-manifest.md`。
-  证据未到位即不进入下一步。
-- **高风险结论二次核验**：高风险结论请你二次核验，skill 不代为放行。
-- **文献不编造**：文献与数据不编造，引用需可追溯（`scholar_search.py` 跨源导出 BibTeX）。
-- **诚实降级**：`style_check.sh` 依赖 `rg`，`rg` 缺失时降级为提示而非静默通过；
-  PowerShell 脚本面向 Windows 主机，Linux 需先装 `pwsh`——README 如实标注。
-
-> 立场：宁可停在证据未到位处，也不在无证据时写正文；宁可标注降级，也不声称未验证的能力。
+未测完的差距写在 [FAILURE_MODES.md](FAILURE_MODES.md)。
 
 ## 结果数字（真实可复算）
 
-- **19 个技能模块**（`skills/` 目录，19/19 通过完整性检查脚本核对）。
-- **8 个工具脚本**（`scripts/` 目录：style_check、scholar_search、pdf_parser、
-  check_skill_integrity、research_quality_gate、init_plan 等）。
-- **14 个旧模块**（`modules/` 保留兼容）。
-- 版本 3.1.0。
+`make check` 用仓库文件重算下表。不一致就失败。不访问网络。
 
-## 测试与验证
+| key | value |
+| --- | --- |
+| skill_directories | 19 |
+| skills_with_skill_md | 19 |
+| tool_scripts | 8 |
+| legacy_module_files | 14 |
+| plan_template_files | 5 |
+| package_version | 3.1.0 |
+| packaging_failures | 0 |
+| planted_violation_types | 6 |
+| violation_types_detected | 6 |
+| clean_fixture_false_positives | 0 |
+| figure_svg_sha256 | b637d3d54a4667c483a078814c3cd9e96313a834a6cde04e17eec141a98482ed |
+| latex_compile | not_tested |
 
-本仓库没有独立单测框架——验证以脚本级为主（与 `CLAUDE.md` 声明一致）：
+机械检查尚未单独发版，包版本以上表为准。
 
-```bash
-# 写作风格检查（对单个 md 输出）
-bash scripts/style_check.sh chapters/01-introduction.md
-# 文献检索工具（跨源，导出 BibTeX）
-python scripts/scholar_search.py "deep learning" --sources crossref --year 2020-2024 --limit 20
-# PDF 解析（抽取文本/章节/元数据）
-python scripts/pdf_parser.py paper.pdf --sections --json output.json
-```
+## 这次实际跑了什么
 
-Windows 端脚本（CI 原声）：
+这次检查的是机制，不是写作质量，也不是模型行为。
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/check_skill_integrity.ps1
-powershell -ExecutionPolicy Bypass -File scripts/research_quality_gate.ps1 -ProjectPath <paper-project>
-```
+代码在 `checks/`。它不调用模型，也不给文章打分。
 
-**环境依赖说明（诚实声明）**：
+- 清单：每个技能目录都有 `SKILL.md`，且前置信息里的 `name` 与目录名一致；两个 `plugin.json` 的字段落在各自文档列出的键里，引用的路径在仓库中存在；两边的名称、版本、描述、许可、关键词、技能路径和仓库地址一致。
+- 门禁：夹具稿里的 `{{claim:ID=字面量}}` 必须在证据表里有同一字面量；`{{cite:KEY}}` 必须能在 `.bib` 里找到；图清单里的脚本和数据文件必须存在，且数据文件的哈希与清单一致。期望的违反类型在写夹具时就定了，夹具字节用哈希锁住。
+- 图：`checks/figure/plot_series.py` 只用标准库把固定 CSV 画成 SVG，再比对哈希。这不是 matplotlib 位图，也不是版面检查。
 
-- `scripts/style_check.sh` 依赖 `rg`（ripgrep）；`rg` 缺失时脚本降级为「每项输出 OK」
-  但实际不执行匹配——这不是静默通过，而是降级提示。请先 `apt install ripgrep` 或
-  `cargo install ripgrep` 再运行。
-- `scripts/check_skill_integrity.ps1` / `research_quality_gate.ps1` 是 PowerShell 脚本，
-  Linux/macOS 需先安装 `powershell`（pwsh），否则无法执行（脚本设计面向 Windows 主机）。
-- Python 脚本依赖 `requirements.txt`（pymupdf / matplotlib / numpy / pandas / requests），
-  运行前 `pip install -r requirements.txt`。
+Windows 上另有稿件脚本 `scripts/research_quality_gate.ps1`。`make check` 不运行它，因为这里没有 PowerShell。
 
-## 版本
+## 平台文件
 
-- 版本：3.1.0
-- 更新日期： 2026-05-10
-
-## 验收题库与复算
-
-`eval/cases.jsonl` 是 20 条可执行验收题，覆盖十个口径：引文格式、错误路径、PDF 小节解析、
-摘要处理、技能模块清单、仓库清单、插件元数据、工具脚本、测试声明、文档锚点。
-其中 16 条 `expr` + 1 条 `raises` 全部**真调本仓库脚本或真解析仓库文件**——
-`scripts/scholar_search.py`、`scripts/pdf_parser.py` 的纯函数被直接 import 执行，
-`.claude-plugin/plugin.json`、`hooks/hooks.json`、`tests/test_scripts_and_repo.py`
-（ast 数测试函数）等都是当场读、当场算；3 条 `doc` 校验公开文档锚点是否还在。
-期望值不是抄文档，而是现算出来的：改掉 `clean_text` 的字符集、`parse_sections` 的正则，
-或者增删一个技能目录，题库立刻变红。
+| 平台 | 仓库里的文件 | 检查范围 |
+| --- | --- | --- |
+| Claude Code | `.claude-plugin/plugin.json`、`hooks/hooks.json` | 字段与路径；未运行 Claude Code |
+| Cursor | `.cursor-plugin/plugin.json`、`hooks/hooks-cursor.json` | 字段与路径；未运行 Cursor |
+| Codex | `skills/*/SKILL.md`、`.codex/INSTALL.md` | 前置信息与安装说明；未运行 Codex |
+| OpenCode | `.opencode/INSTALL.md` | 写明本仓库没有 `package.json`，所以不是文档里的 git 插件包；未运行 OpenCode |
+| Gemini CLI | `GEMINI.md` | 上下文文件存在，且 `@./` 引用的文件存在；未运行 Gemini CLI |
 
 ```bash
-python3 eval/run_cases.py            # 20/20 cases passed
-python3 eval/run_cases.py --save     # 顺带把结果写进 eval/run-report.json
-python3 eval/run_cases.py --selftest # 篡改一条期望值，必须变红（19/20）
+git clone https://github.com/aidless/research-writing-skill.git
+cd research-writing-skill
+make check
 ```
 
-三种 mode 的口径：`expr` 的 `verify` 是一段可执行 Python，必须以 `result = ...` 结尾，
-结果与 `expected` 比较（数值容差 1e-9）；`raises` 要求 `verify` 抛出 `expected` 指定的异常类；
-`doc` 形如 `相对路径::正则`，断言正则在文件里出现。
+## 技能
 
-**数字如何复算**：`eval/run-report.json` 里每条 case 都带 `id` / `axis` / `detail`，
-把 `detail` 与 `cases.jsonl` 的 `verify` 代码一起看，就能从仓库源码复现该数字；
-`--save` 重跑一次即可重建整份报告，不需要手工抄数。
+- `skills/using-research-writing/`
+- `skills/paper-orchestration/`
+- `skills/brainstorming-research/`
+- `skills/evidence-driven-writing/`
+- `skills/writing-chapters/`
+- `skills/experiment-results-planning/`
+- `skills/latex-output/`
+- `skills/literature-review/`
+- `skills/figures-python/`
+- `skills/figures-diagram/`
+- `skills/peer-review/`
+- `skills/statistical-analysis/`
+- `skills/verification/`
+- `skills/environment-setup/`
+- `skills/prompts-collection/`
+- `skills/writing-core/`
+- `skills/writing-humanities/`
+- `skills/writing-medical/`
+- `skills/writing-law/`
 
-**失败归因**：`run_cases.py` 不只报通过率，失败时按 `axis` 汇总（例如
-`脚本/引文格式: 1 条 —— SS-01`），直接指出是哪个口径坏了，而不是只给一个通过率。
-`--selftest` 就是这条纪律的反证：把 SS-01 的期望值篡改成不可能的值，整套题必须掉到 19/20。
+旧说明在 `modules/`。计划模板在 `plan-template/`。
 
+## 已撤回的说法
+
+旧 README 写过比普通对话式写作工具更稳定，也写过各平台已经适配。这里没有对照实验，也没有实机加载记录，所以这两句删掉了。作者草稿跑通过一遍的说法，草稿不在本仓库，本次没有复跑。

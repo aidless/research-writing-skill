@@ -1,0 +1,46 @@
+{
+  "note": "expected_codes were chosen when each fixture was written, one planted defect per directory. sha256 locks the fixture bytes. checks/run_check.py reads this file and does not update it. Same-change specification, not a prior preregistration.",
+  "algorithm": "sha256 over sorted relative paths, skipping __pycache__ and .pyc: utf-8 path, newline, 16-digit byte length, newline, file bytes, newline",
+  "fixtures": {
+    "clean": {
+      "sha256": "a57d6549e9a5e2c9dfb58ce2837c1bac1ca4bd635266f9aa199bb9b7b5ae91a0",
+      "expected_codes": []
+    },
+    "unmapped_claim": {
+      "sha256": "018b7de2d5865607674f5d53bb70dddc70157d1bca7fb4236904648ec66d72bb",
+      "expected_codes": [
+        "unmapped_claim"
+      ]
+    },
+    "claim_literal_mismatch": {
+      "sha256": "bc2fb2083b2e04c17b5d6176dac492b8795a65f99cda1c467396e8cbfe698b97",
+      "expected_codes": [
+        "claim_literal_mismatch"
+      ]
+    },
+    "unresolved_citation": {
+      "sha256": "7f40786e308439f3ae9e6b59b2bd04183e123090c1bc8408fed9161302089ab9",
+      "expected_codes": [
+        "unresolved_citation"
+      ]
+    },
+    "missing_figure_script": {
+      "sha256": "65466c6d3b7cc4116ce52120a9e059bbbcb168341cab42f728150ec72a2a3166",
+      "expected_codes": [
+        "missing_figure_script"
+      ]
+    },
+    "missing_data_file": {
+      "sha256": "c60c71135dd2cb951af640dad913248228ec068b49b50863fc58ff10f47558cd",
+      "expected_codes": [
+        "missing_data_file"
+      ]
+    },
+    "data_hash_mismatch": {
+      "sha256": "8b029a1b2658b395df3c5a647d0d873a2516fa18a1b4fabbe394967babc023b8",
+      "expected_codes": [
+        "data_hash_mismatch"
+      ]
+    }
+  }
+}
