@@ -15,7 +15,8 @@ dist/
 build/
 *.egg-info/
 .DS_Store
-data/
+# Root datasets only. Fixture CSVs under checks/fixtures/ must stay tracked.
+/data/
 models/
 .regression_tmp/
 *.bak
